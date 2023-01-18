@@ -5,9 +5,10 @@ import Header from '../../Component/Header';
 import BigNewsCard from '../../Component/BigNewsCard';
 import Text from '../../Component/Text';
 import NewsCard from '../../Component/NewsCard';
-import { request } from '../../Api';
+import {request} from '../../Api';
 import moment from 'moment';
-import { useArticleStore } from '../../Service/Store';
+import {useArticleStore} from '../../Service/Store';
+import {isCloseToBottom} from '../../Utils/Scroll Event Handler';
 
 export interface Source {
   id: string;
@@ -31,12 +32,6 @@ const HomeScreen = () => {
   const [page, setPage] = useState(1);
   const articleStore = useArticleStore();
 
-  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}: NativeScrollEvent) => {
-    const paddingToBottom = 20;
-    return layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom;
-  };
-
   const getData = async (pageNow: number, searchVal: string = 'indonesia') => {
     if (page === pageNow && page !== 1) {
       return;
@@ -49,16 +44,16 @@ const HomeScreen = () => {
         if (pageNow === 1) {
           articleStore.setToday(res.data.articles);
         } else {
-          articleStore.setToday([...articleStore.today, ...res.data.articles])
+          articleStore.setToday([...articleStore.today, ...res.data.articles]);
         }
         if (res.data.articles.length > 0) {
-          setPage(pageNow)
+          setPage(pageNow);
         }
       }
     } catch (error) {
       console.log(error, 'error get data');
     }
-  }
+  };
 
   useEffect(() => {
     getData(page);
@@ -70,11 +65,11 @@ const HomeScreen = () => {
 
   const SubTopSeries: Article[] = useMemo(() => {
     return articleStore.today.slice(2, 4);
-  }, [articleStore.today])
+  }, [articleStore.today]);
 
   const RestTopSeries: Article[] = useMemo(() => {
     return articleStore?.today?.slice(4, articleStore.today.length - 1);
-  }, [articleStore.today])
+  }, [articleStore.today]);
 
   return (
     <View style={styles.container}>
@@ -89,11 +84,12 @@ const HomeScreen = () => {
         onSearch={(val: string) => setSearch(val)}
         isSearch={isSearch}
       />
-      <ScrollView onScroll={({nativeEvent}) => {
-        if (isCloseToBottom(nativeEvent)) {
-          getData(page + 1, search)
-        }
-      }}>
+      <ScrollView
+        onScroll={({nativeEvent}) => {
+          if (isCloseToBottom(nativeEvent)) {
+            getData(page + 1, search);
+          }
+        }}>
         <View style={styles.body}>
           <View style={styles.topHeadlines}>
             <View style={styles.topHeadlinesTitle}>
@@ -111,7 +107,9 @@ const HomeScreen = () => {
             </View>
 
             <View style={styles.otherHeadlines}>
-              {RestTopSeries.map((item, index) => <NewsCard data={item} key={index} />)}
+              {RestTopSeries.map((item, index) => (
+                <NewsCard data={item} key={index} />
+              ))}
             </View>
           </View>
         </View>

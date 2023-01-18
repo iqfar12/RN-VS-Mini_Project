@@ -9,7 +9,7 @@ import React from 'react';
 import Text from './Text';
 import Image from './Image';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Article } from '../Screen/Home';
+import {Article} from '../Screen/Home';
 import moment from 'moment';
 
 interface BigNewsCardProps {

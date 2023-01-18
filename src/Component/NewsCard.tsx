@@ -10,7 +10,7 @@ import Text from './Text';
 import Image from './Image';
 import {widthPercentageToDP} from '../Utils/Helper/Sizing';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Article } from '../Screen/Home';
+import {Article} from '../Screen/Home';
 import moment from 'moment';
 
 interface NewsCardProps {

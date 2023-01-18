@@ -5,6 +5,7 @@ import {Screen} from '../Utils/Constant';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Screen/Home/styles';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import TrendingScreen from '../Screen/Trending';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -38,7 +39,7 @@ const TabNavigator = () => {
           ),
         }}
         name={Screen.TRENDING}
-        component={HomeScreen}
+        component={TrendingScreen}
       />
       <Tab.Screen
         options={{
