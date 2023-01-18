@@ -9,17 +9,21 @@ import React from 'react';
 import Text from './Text';
 import Image from './Image';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Article } from '../Screen/Home';
+import moment from 'moment';
 
 interface BigNewsCardProps {
   width: number | string;
   numberOfLines?: number;
   containerStyle?: StyleProp<ViewStyle>;
+  data: Article;
 }
 
 const BigNewsCard = ({
   width,
-  numberOfLines,
+  numberOfLines = 2,
   containerStyle,
+  data,
 }: BigNewsCardProps) => {
   return (
     <TouchableOpacity
@@ -32,27 +36,26 @@ const BigNewsCard = ({
       <View style={styles.image}>
         <Image
           source={{
-            uri: 'https://static.politico.com/18/00/4a54d0d44de28ae48b08590a0eb7/desantis-inauguration-32215.jpg',
+            uri: data?.urlToImage,
           }}
         />
       </View>
       <View style={styles.category}>
         <Text weight="bold" size={12} color="#EA2518">
-          Regional
+          {data?.source?.name}
         </Text>
       </View>
       <View style={styles.title}>
         <Text
           weight="bold"
-          numberOfLines={numberOfLines ? numberOfLines : 2}
+          numberOfLines={numberOfLines}
           size={16}
           color={'#000'}>
-          Relief checks live updates: debt ceiling, social security payments,
-          Davos World Economic Forum - AS USA
+          {data?.title}
         </Text>
       </View>
       <View style={styles.bottom}>
-        <Text color="#6C757D">1 jam lalu</Text>
+        <Text color="#6C757D">{moment(data?.publishedAt).fromNow()}</Text>
         <TouchableOpacity style={styles.more}>
           <Icon name="more-horiz" size={30} color={'#6C757D'} />
         </TouchableOpacity>

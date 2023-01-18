@@ -10,38 +10,40 @@ import Text from './Text';
 import Image from './Image';
 import {widthPercentageToDP} from '../Utils/Helper/Sizing';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Article } from '../Screen/Home';
+import moment from 'moment';
 
 interface NewsCardProps {
   containerStyles?: StyleProp<ViewStyle>;
+  data: Article;
 }
 
-const NewsCard = ({containerStyles}: NewsCardProps) => {
+const NewsCard = ({containerStyles, data}: NewsCardProps) => {
   return (
     <View style={[styles.container, containerStyles]}>
       <View style={styles.body}>
         <View style={styles.titleContainer}>
           <View style={styles.tag}>
             <Text weight="bold" size={12} color="#EA2518">
-              Regional
+              {data?.source?.name}
             </Text>
           </View>
           <View style={styles.title}>
             <Text weight="bold" numberOfLines={3} size={14} color={'#000'}>
-              Relief checks live updates: debt ceiling, social security
-              payments, Davos World Economic Forum - AS USA
+              {data?.title}
             </Text>
           </View>
         </View>
         <View style={styles.image}>
           <Image
             source={{
-              uri: 'https://static.politico.com/18/00/4a54d0d44de28ae48b08590a0eb7/desantis-inauguration-32215.jpg',
+              uri: data?.urlToImage,
             }}
           />
         </View>
       </View>
       <View style={styles.bottom}>
-        <Text color="#6C757D">1 jam lalu</Text>
+        <Text color="#6C757D">{moment(data?.publishedAt).fromNow()}</Text>
         <TouchableOpacity style={styles.more}>
           <Icon name="more-horiz" size={30} color={'#6C757D'} />
         </TouchableOpacity>
