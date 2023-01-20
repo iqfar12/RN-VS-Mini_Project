@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     paddingBottom: 60,
-  }
+  },
 });
 
 export default styles;

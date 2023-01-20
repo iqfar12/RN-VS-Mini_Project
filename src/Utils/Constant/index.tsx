@@ -4,4 +4,5 @@ export const Screen = {
   EXCLUSIVE: 'Exclusive',
   MENU: 'Menu',
   MAIN: 'Main',
+  LOGIN: 'Login'
 };

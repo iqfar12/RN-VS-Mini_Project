@@ -6,14 +6,18 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Screen/Home/styles';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import TrendingScreen from '../Screen/Trending';
+import LoginScreen from '../Screen/Login';
+import { userStorage } from '../Service/Storage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const StackNavigator = () => {
+  const isLogin = userStorage.getItem('isLogin');
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator initialRouteName={isLogin ? Screen.MAIN : Screen.LOGIN} screenOptions={{headerShown: false}}>
       <Stack.Screen name={Screen.MAIN} component={TabNavigator} />
+      <Stack.Screen name={Screen.LOGIN} component={LoginScreen} />
     </Stack.Navigator>
   );
 };
