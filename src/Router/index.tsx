@@ -8,6 +8,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import TrendingScreen from '../Screen/Trending';
 import LoginScreen from '../Screen/Login';
 import { userStorage } from '../Service/Storage';
+import {register} from 'react-native-bundle-splitter';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -15,16 +16,16 @@ const Tab = createBottomTabNavigator();
 const StackNavigator = () => {
   const isLogin = userStorage.getItem('isLogin');
   return (
-    <Stack.Navigator initialRouteName={isLogin ? Screen.MAIN : Screen.LOGIN} screenOptions={{headerShown: false}}>
+    <Stack.Navigator initialRouteName={isLogin ? Screen.MAIN : Screen.LOGIN} screenOptions={{headerShown: false, freezeOnBlur: true}}>
       <Stack.Screen name={Screen.MAIN} component={TabNavigator} />
-      <Stack.Screen name={Screen.LOGIN} component={LoginScreen} />
+      <Stack.Screen name={Screen.LOGIN} component={register({loader: () => import('../Screen/Login')})} />
     </Stack.Navigator>
   );
 };
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator screenOptions={{headerShown: false}}>
+    <Tab.Navigator screenOptions={{headerShown: false, freezeOnBlur: true}}>
       <Tab.Screen
         options={{
           tabBarLabel: 'Hari ini',
@@ -33,7 +34,7 @@ const TabNavigator = () => {
           ),
         }}
         name={Screen.HOME}
-        component={HomeScreen}
+        component={register({loader: () => import('../Screen/Home')})}
       />
       <Tab.Screen
         options={{
@@ -43,7 +44,7 @@ const TabNavigator = () => {
           ),
         }}
         name={Screen.TRENDING}
-        component={TrendingScreen}
+        component={register({loader: () => import('../Screen/Trending')})}
       />
       <Tab.Screen
         options={{
