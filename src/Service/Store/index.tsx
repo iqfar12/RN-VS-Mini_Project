@@ -34,6 +34,10 @@ const DEFAULT_TRENDING_STATE = {
   page: 1,
 };
 
+const DEFAULT_BOOKMART_STATE = {
+  data: [],
+}
+
 // export const useArticleStore: UseBoundStore<StoreApi<ArticleStoreProps>> =
 //   create(set => ({
 //     today: [],
@@ -68,6 +72,25 @@ const getTrending = (store: any, params: any) => {
   return store.putActionToSaga({type: ArticleTypes.GET_TRENDING, data: params});
 }
 
+const setBookmark = (store: any, params: any) => {
+  const bookmark = store.getState().bookmark;
+  console.log(bookmark);
+  const isAlreadyBookMark = bookmark.data.includes(params)
+  console.log(isAlreadyBookMark, 'is bookmarked');
+
+  if (isAlreadyBookMark) {
+    return null;
+  }
+
+  store.setState({
+    bookmark: {
+      ...bookmark,
+      data: [...bookmark.data, params]
+    }
+  })
+
+}
+
 export const useArticleStore = create(
   persist(
     sagaMiddleware(
@@ -75,8 +98,10 @@ export const useArticleStore = create(
       immer((get, set, store) => ({
         today: DEFAULT_TODAY_STATE,
         trending: DEFAULT_TRENDING_STATE,
+        bookmark: DEFAULT_BOOKMART_STATE,
         getToday: (params: any) => getToday(store, params),
-        getTrending: (params: any) => getTrending(store, params)
+        getTrending: (params: any) => getTrending(store, params),
+        setBookmark: (params: any) => setBookmark(store, params),
       })),
     ),
     {

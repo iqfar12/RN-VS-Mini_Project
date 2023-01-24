@@ -17,6 +17,7 @@ interface BigNewsCardProps {
   numberOfLines?: number;
   containerStyle?: StyleProp<ViewStyle>;
   data: Article;
+  onMore?: () => void;
 }
 
 const BigNewsCard = ({
@@ -24,6 +25,7 @@ const BigNewsCard = ({
   numberOfLines = 2,
   containerStyle,
   data,
+  onMore
 }: BigNewsCardProps) => {
   return (
     <TouchableOpacity
@@ -56,7 +58,7 @@ const BigNewsCard = ({
       </View>
       <View style={styles.bottom}>
         <Text color="#6C757D">{moment(data?.publishedAt).fromNow()}</Text>
-        <TouchableOpacity style={styles.more}>
+        <TouchableOpacity onPress={onMore} style={styles.more}>
           <Icon name="more-horiz" size={30} color={'#6C757D'} />
         </TouchableOpacity>
       </View>

@@ -16,9 +16,10 @@ import moment from 'moment';
 interface NewsCardProps {
   containerStyles?: StyleProp<ViewStyle>;
   data: Article;
+  onMore?: () => void;
 }
 
-const NewsCard = ({containerStyles, data}: NewsCardProps) => {
+const NewsCard = ({containerStyles, data, onMore}: NewsCardProps) => {
   return (
     <View style={[styles.container, containerStyles]}>
       <View style={styles.body}>
@@ -44,7 +45,7 @@ const NewsCard = ({containerStyles, data}: NewsCardProps) => {
       </View>
       <View style={styles.bottom}>
         <Text color="#6C757D">{moment(data?.publishedAt).fromNow()}</Text>
-        <TouchableOpacity style={styles.more}>
+        <TouchableOpacity onPress={onMore} style={styles.more}>
           <Icon name="more-horiz" size={30} color={'#6C757D'} />
         </TouchableOpacity>
       </View>

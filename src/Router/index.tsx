@@ -52,7 +52,7 @@ const TabNavigator = () => {
           tabBarIcon: ({color}) => <Icon name="star" size={25} color={color} />,
         }}
         name={Screen.EXCLUSIVE}
-        component={HomeScreen}
+        component={register({loader: () => import('../Screen/Bookmark')})}
       />
       <Tab.Screen
         options={{

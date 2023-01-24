@@ -9,6 +9,8 @@ import {request} from '../../Api';
 import moment from 'moment';
 import {useArticleStore} from '../../Service/Store';
 import {isCloseToBottom} from '../../Utils/Scroll Event Handler';
+import LoadingModal from '../../Component/LoadingModal';
+import BottomModal from '../../Component/BottomModal';
 
 export interface Source {
   id: string;
@@ -29,7 +31,8 @@ export interface Article {
 const HomeScreen = () => {
   const [isSearch, setIsSearch] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
-  const [page, setPage] = useState(1);
+  const [bottomMenu, setBottomMenu] = useState<boolean>(false);
+  const [newsAction, setNewsAction] = useState<Article>();
   const articleStore = useArticleStore();
 
   useEffect(() => {
@@ -48,8 +51,19 @@ const HomeScreen = () => {
     return articleStore?.today?.data.slice(4, articleStore.today.data.length - 1);
   }, [articleStore.today]);
 
+  const onMore = (data: Article) => {
+    setNewsAction(data);
+    setBottomMenu(true);
+  }
+
+  const onMoreClose = () => {
+    setBottomMenu(false)
+    setNewsAction(undefined);
+  }
+
   return (
     <View style={styles.container}>
+      {articleStore.today.fetching && <LoadingModal />}
       <Header
         title="Virtual.com"
         onClickSearch={() => setIsSearch(true)}
@@ -76,22 +90,24 @@ const HomeScreen = () => {
               </Text>
             </View>
             <View style={styles.headlinesNews}>
-              <BigNewsCard data={TopSeries} width={'100%'} />
+              <BigNewsCard onMore={() => onMore(TopSeries)} data={TopSeries} width={'100%'} />
             </View>
 
             <View style={styles.subHeadlines}>
-              <BigNewsCard data={SubTopSeries[0]} width={'45%'} />
-              <BigNewsCard data={SubTopSeries[1]} width={'45%'} />
+              <BigNewsCard onMore={() => onMore(SubTopSeries[0])} data={SubTopSeries[0]} width={'45%'} />
+              <BigNewsCard onMore={() => onMore(SubTopSeries[1])} data={SubTopSeries[1]} width={'45%'} />
             </View>
 
             <View style={styles.otherHeadlines}>
               {RestTopSeries.map((item, index) => (
-                <NewsCard data={item} key={index} />
+                <NewsCard onMore={() => onMore(item)} data={item} key={index} />
               ))}
             </View>
           </View>
         </View>
       </ScrollView>
+
+      <BottomModal visible={bottomMenu} onReadLater={() => articleStore.setBookmark(newsAction)} onClose={onMoreClose} />
     </View>
   );
 };

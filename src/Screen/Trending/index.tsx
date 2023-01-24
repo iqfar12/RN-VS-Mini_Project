@@ -5,6 +5,7 @@ import styles from './styles';
 import Header from '../../Component/Header';
 import {useArticleStore} from '../../Service/Store';
 import NewsCard from '../../Component/NewsCard';
+import LoadingModal from '../../Component/LoadingModal';
 
 const TrendingScreen = () => {
   const [isSearch, setIsSearch] = useState<boolean>(false);
@@ -18,6 +19,7 @@ const TrendingScreen = () => {
 
   return (
     <View style={styles.container}>
+      {articleStore.trending.fetching && <LoadingModal />}
       <Header
         title="Trending"
         onClickSearch={() => setIsSearch(true)}
