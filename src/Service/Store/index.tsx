@@ -22,14 +22,16 @@ const DEFAULT_TODAY_STATE = {
   data: [],
   fetching: false,
   payload: undefined,
-  error: false
+  error: false,
+  page: 1,
 };
 
 const DEFAULT_TRENDING_STATE = {
   data: [],
   fetching: false,
   payload: undefined,
-  error: false
+  error: false,
+  page: 1,
 };
 
 // export const useArticleStore: UseBoundStore<StoreApi<ArticleStoreProps>> =

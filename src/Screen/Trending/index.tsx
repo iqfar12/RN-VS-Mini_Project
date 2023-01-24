@@ -39,6 +39,7 @@ const TrendingScreen = () => {
           contentContainerStyle={styles.scroll}
           onEndReached={() => {
             // getData(page + 1, search);
+            articleStore.getTrending({page: articleStore.trending.page + 1})
           }}
         />
       </View>
