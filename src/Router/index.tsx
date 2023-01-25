@@ -1,29 +1,40 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import HomeScreen from '../Screen/Home';
 import {Screen} from '../Utils/Constant';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../Screen/Home/styles';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import TrendingScreen from '../Screen/Trending';
-import LoginScreen from '../Screen/Login';
 import { userStorage } from '../Service/Storage';
-import {register} from 'react-native-bundle-splitter';
+import {preload, register} from 'react-native-bundle-splitter';
+import { Fragment, useEffect } from 'react';
+import LoadingModal from '../Component/LoadingModal';
+import { BookmarkScreen, DetailScreen, HomeScreenRegister, LoginScreen, TrendingScreen } from './Register';
+import NavigationService from '../Service/Helper/NavigationService';
+import { useSessionStore } from '../Service/Store/SessionStore';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const StackNavigator = () => {
-  const isLogin = userStorage.getItem('isLogin');
+  
   return (
-    <Stack.Navigator initialRouteName={isLogin ? Screen.MAIN : Screen.LOGIN} screenOptions={{headerShown: false, freezeOnBlur: true}}>
+    <Stack.Navigator screenOptions={{headerShown: false, freezeOnBlur: true}}>
       <Stack.Screen name={Screen.MAIN} component={TabNavigator} />
-      <Stack.Screen name={Screen.LOGIN} component={register({loader: () => import('../Screen/Login')})} />
+      <Stack.Screen name={Screen.DETAIL} component={DetailScreen} />
     </Stack.Navigator>
   );
 };
 
-const TabNavigator = () => {
+const AuthStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name={Screen.LOGIN} component={LoginScreen} />
+    </Stack.Navigator>
+  )
+}
+
+const TabNavigator = () => { 
+
   return (
     <Tab.Navigator screenOptions={{headerShown: false, freezeOnBlur: true}}>
       <Tab.Screen
@@ -34,7 +45,7 @@ const TabNavigator = () => {
           ),
         }}
         name={Screen.HOME}
-        component={register({loader: () => import('../Screen/Home')})}
+        component={HomeScreenRegister}
       />
       <Tab.Screen
         options={{
@@ -44,7 +55,7 @@ const TabNavigator = () => {
           ),
         }}
         name={Screen.TRENDING}
-        component={register({loader: () => import('../Screen/Trending')})}
+        component={TrendingScreen}
       />
       <Tab.Screen
         options={{
@@ -52,7 +63,7 @@ const TabNavigator = () => {
           tabBarIcon: ({color}) => <Icon name="star" size={25} color={color} />,
         }}
         name={Screen.EXCLUSIVE}
-        component={register({loader: () => import('../Screen/Bookmark')})}
+        component={BookmarkScreen}
       />
       <Tab.Screen
         options={{
@@ -60,17 +71,29 @@ const TabNavigator = () => {
           tabBarIcon: ({color}) => <Icon name="menu" size={25} color={color} />,
         }}
         name={Screen.MENU}
-        component={HomeScreen}
+        component={HomeScreenRegister}
       />
     </Tab.Navigator>
   );
 };
 
 const MainNavigator = () => {
+  const isLogin = useSessionStore((state: any) => state.isLogin);
+  useEffect(() => {
+
+    // Preload Every Screen;
+    preload().group('Tab')
+    // preload().component(Screen.LOGIN).finally(() => {
+      
+    // })
+  }, [])
   return (
-    <NavigationContainer>
-      <StackNavigator />
-    </NavigationContainer>
+    <Fragment>
+      <NavigationContainer ref={(ref) => NavigationService.setInstance(ref)}>
+        {isLogin ? <StackNavigator /> : <AuthStack />}
+      </NavigationContainer>
+      <LoadingModal />
+    </Fragment>
   );
 };
 

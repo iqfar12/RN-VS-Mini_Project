@@ -6,13 +6,16 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { userStorage } from '../../Service/Storage';
 import { useNavigation } from '@react-navigation/native';
 import { Screen } from '../../Utils/Constant';
+import NavigationService from '../../Service/Helper/NavigationService';
+import { useSessionStore } from '../../Service/Store/SessionStore';
 
 const LoginScreen = () => {
-    const navigation = useNavigation();
+    const {navigate} = NavigationService;
+    const {login} = useSessionStore();
 
     const onLogin = () => {
-        userStorage.setItem('isLogin', JSON.stringify(true));
-        navigation.navigate(Screen.MAIN)
+        login();
+        // navigate(Screen.MAIN, {});
     }
 
   return (

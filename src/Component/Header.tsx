@@ -11,6 +11,8 @@ interface HeaderProps {
   onClickSearch?: () => void;
   onCloseSearch?: () => void;
   searchVal?: string;
+  isBack?: boolean;
+  onBack?: () => void;
 }
 
 const Header = ({
@@ -21,9 +23,14 @@ const Header = ({
   onSearch,
   onCloseSearch,
   searchVal,
+  isBack,
+  onBack,
 }: HeaderProps) => {
   return (
     <View style={styles.container}>
+      {isBack && <TouchableOpacity onPress={onBack} style={styles.back}>
+        <Icon name='arrow-back' size={25} color={'#FFF'} />
+      </TouchableOpacity>}
       {isSearch ? (
         <View style={styles.inputContainer}>
           <TextInput
@@ -95,4 +102,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginBottom: -9,
   },
+  back: {
+    position: 'absolute',
+    left: 0,
+    padding: 10,
+    zIndex: 10,
+  }
 });

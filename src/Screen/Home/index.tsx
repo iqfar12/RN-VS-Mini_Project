@@ -11,6 +11,12 @@ import {useArticleStore} from '../../Service/Store';
 import {isCloseToBottom} from '../../Utils/Scroll Event Handler';
 import LoadingModal from '../../Component/LoadingModal';
 import BottomModal from '../../Component/BottomModal';
+import NavigationService from '../../Service/Helper/NavigationService';
+import { Screen } from '../../Utils/Constant';
+import { userStorage } from '../../Service/Storage';
+import { useSessionStore } from '../../Service/Store/SessionStore';
+import { useTodayArticleStore } from '../../Service/Store/ArticleTodayStore';
+import { useBookmarkArticleStore } from '../../Service/Store/ArticleBookmark';
 
 export interface Source {
   id: string;
@@ -33,23 +39,28 @@ const HomeScreen = () => {
   const [search, setSearch] = useState<string>('');
   const [bottomMenu, setBottomMenu] = useState<boolean>(false);
   const [newsAction, setNewsAction] = useState<Article>();
-  const articleStore = useArticleStore();
+  // const {data, page} = useArticleStore((state: any) => state.today);
+  const {today, getToday} = useTodayArticleStore();
+  const {data, page} = today;
+  const {logout} = useSessionStore();
+  const {setBookmark} = useBookmarkArticleStore();
+  const {navigate} = NavigationService;
 
   useEffect(() => {
-    articleStore.getToday({page: 1});
+    getToday({page: 1});
   }, [])
 
   const TopSeries: Article = useMemo(() => {
-    return articleStore.today.data[0];
-  }, [articleStore.today]);
+    return data[0];
+  }, [data]);
 
   const SubTopSeries: Article[] = useMemo(() => {
-    return articleStore.today.data.slice(2, 4);
-  }, [articleStore.today]);
+    return data.slice(2, 4);
+  }, [data]);
 
   const RestTopSeries: Article[] = useMemo(() => {
-    return articleStore?.today?.data.slice(4, articleStore.today.data.length - 1);
-  }, [articleStore.today]);
+    return data.slice(4, data.length - 1);
+  }, [data]);
 
   const onMore = (data: Article) => {
     setNewsAction(data);
@@ -61,9 +72,12 @@ const HomeScreen = () => {
     setNewsAction(undefined);
   }
 
+  const toDetail = (params: Article) => {
+    navigate(Screen.DETAIL, {data: params});
+  }
+
   return (
     <View style={styles.container}>
-      {articleStore.today.fetching && <LoadingModal />}
       <Header
         title="Virtual.com"
         onClickSearch={() => setIsSearch(true)}
@@ -74,12 +88,15 @@ const HomeScreen = () => {
         searchVal={search}
         onSearch={(val: string) => setSearch(val)}
         isSearch={isSearch}
+        onClickAccount={() => {
+          logout()
+        }} 
       />
       <ScrollView
         onScroll={({nativeEvent}) => {
           if (isCloseToBottom(nativeEvent)) {
             // getData(page + 1, search);
-            articleStore.getToday({page: articleStore.today.page + 1})
+            getToday({page: page + 1})
           }
         }}>
         <View style={styles.body}>
@@ -90,24 +107,24 @@ const HomeScreen = () => {
               </Text>
             </View>
             <View style={styles.headlinesNews}>
-              <BigNewsCard onMore={() => onMore(TopSeries)} data={TopSeries} width={'100%'} />
+              <BigNewsCard onPress={() => toDetail(TopSeries)} onMore={() => onMore(TopSeries)} data={TopSeries} width={'100%'} />
             </View>
 
             <View style={styles.subHeadlines}>
-              <BigNewsCard onMore={() => onMore(SubTopSeries[0])} data={SubTopSeries[0]} width={'45%'} />
-              <BigNewsCard onMore={() => onMore(SubTopSeries[1])} data={SubTopSeries[1]} width={'45%'} />
+              <BigNewsCard onPress={() => toDetail(SubTopSeries[0])} onMore={() => onMore(SubTopSeries[0])} data={SubTopSeries[0]} width={'45%'} />
+              <BigNewsCard onMore={() => onMore(SubTopSeries[1])} onPress={() => toDetail(SubTopSeries[1])} data={SubTopSeries[1]} width={'45%'} />
             </View>
 
             <View style={styles.otherHeadlines}>
               {RestTopSeries.map((item, index) => (
-                <NewsCard onMore={() => onMore(item)} data={item} key={index} />
+                <NewsCard onMore={() => onMore(item)} onPress={() => toDetail(item)} data={item} key={index} />
               ))}
             </View>
           </View>
         </View>
       </ScrollView>
 
-      <BottomModal visible={bottomMenu} onReadLater={() => articleStore.setBookmark(newsAction)} onClose={onMoreClose} />
+      <BottomModal visible={bottomMenu} onReadLater={() => setBookmark(newsAction)} onClose={onMoreClose} />
     </View>
   );
 };

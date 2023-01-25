@@ -17,11 +17,12 @@ interface NewsCardProps {
   containerStyles?: StyleProp<ViewStyle>;
   data: Article;
   onMore?: () => void;
+  onPress?: () => void;
 }
 
-const NewsCard = ({containerStyles, data, onMore}: NewsCardProps) => {
+const NewsCard = ({containerStyles, data, onMore, onPress}: NewsCardProps) => {
   return (
-    <View style={[styles.container, containerStyles]}>
+    <TouchableOpacity onPress={onPress} style={[styles.container, containerStyles]}>
       <View style={styles.body}>
         <View style={styles.titleContainer}>
           <View style={styles.tag}>
@@ -49,7 +50,7 @@ const NewsCard = ({containerStyles, data, onMore}: NewsCardProps) => {
           <Icon name="more-horiz" size={30} color={'#6C757D'} />
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

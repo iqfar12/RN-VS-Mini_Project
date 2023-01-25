@@ -5,6 +5,7 @@ import {immer} from 'zustand/middleware/immer';
 import root from '../Sagas';
 import MMKVStoragePersistHelper from '../Helper/MMKVManager';
 import sagaMiddleware from 'zustand-saga';
+import LoadingHelper from '../Helper/LoadingHelper';
 
 interface ArticleStoreProps {
   today: Article[];
@@ -46,68 +47,70 @@ const DEFAULT_BOOKMART_STATE = {
 //     setTrending: (data: Article[]) => set({trending: data}),
 //   }));
 
-const getToday = (store: any, params: any) => {
-  const today = store.getState().today;
+// const getToday = (store: any, params: any) => {
+//   const today = store.getState().today;
 
-  store.setState({
-    today: {
-      ...today,
-      fetching: true
-    },
-  });
+//   store.setState({
+//     today: {
+//       ...today,
+//       fetching: true
+//     },
+//   });
 
-  return store.putActionToSaga({type: ArticleTypes.GET_TODAY, params: params});
-};
+//   LoadingHelper.show();
 
-const getTrending = (store: any, params: any) => {
-  const trending = store.getState().trending;
+//   return store.putActionToSaga({type: ArticleTypes.GET_TODAY, params: params});
+// };
+
+// const getTrending = (store: any, params: any) => {
+//   const trending = store.getState().trending;
   
-  store.setState({
-    trending: {
-      ...trending,
-      fetching: true
-    }
-  })
+//   store.setState({
+//     trending: {
+//       ...trending,
+//       fetching: true
+//     }
+//   })
   
-  return store.putActionToSaga({type: ArticleTypes.GET_TRENDING, data: params});
-}
+//   return store.putActionToSaga({type: ArticleTypes.GET_TRENDING, data: params});
+// }
 
-const setBookmark = (store: any, params: any) => {
-  const bookmark = store.getState().bookmark;
-  console.log(bookmark);
-  const isAlreadyBookMark = bookmark.data.includes(params)
-  console.log(isAlreadyBookMark, 'is bookmarked');
+// const setBookmark = (store: any, params: any) => {
+//   const bookmark = store.getState().bookmark;
+//   console.log(bookmark);
+//   const isAlreadyBookMark = bookmark.data.includes(params)
+//   console.log(isAlreadyBookMark, 'is bookmarked');
 
-  if (isAlreadyBookMark) {
-    return null;
-  }
+//   if (isAlreadyBookMark) {
+//     return null;
+//   }
 
-  store.setState({
-    bookmark: {
-      ...bookmark,
-      data: [...bookmark.data, params]
-    }
-  })
+//   store.setState({
+//     bookmark: {
+//       ...bookmark,
+//       data: [...bookmark.data, params]
+//     }
+//   })
 
-}
+// }
 
-export const useArticleStore = create(
-  persist(
-    sagaMiddleware(
-      root,
-      immer((get, set, store) => ({
-        today: DEFAULT_TODAY_STATE,
-        trending: DEFAULT_TRENDING_STATE,
-        bookmark: DEFAULT_BOOKMART_STATE,
-        getToday: (params: any) => getToday(store, params),
-        getTrending: (params: any) => getTrending(store, params),
-        setBookmark: (params: any) => setBookmark(store, params),
-      })),
-    ),
-    {
-      name: 'Article',
-      version: 1,
-      storage: createJSONStorage(() => new MMKVStoragePersistHelper('Article')),
-    },
-  ),
-);
+// export const useArticleStore = create(
+//   persist(
+//     sagaMiddleware(
+//       root,
+//       immer((get, set, store) => ({
+//         today: DEFAULT_TODAY_STATE,
+//         trending: DEFAULT_TRENDING_STATE,
+//         bookmark: DEFAULT_BOOKMART_STATE,
+//         getToday: (params: any) => getToday(store, params),
+//         getTrending: (params: any) => getTrending(store, params),
+//         setBookmark: (params: any) => setBookmark(store, params),
+//       })),
+//     ),
+//     {
+//       name: 'Article',
+//       version: 1,
+//       storage: createJSONStorage(() => new MMKVStoragePersistHelper('Article')),
+//     },
+//   ),
+// );

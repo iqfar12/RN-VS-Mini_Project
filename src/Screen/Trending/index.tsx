@@ -6,20 +6,20 @@ import Header from '../../Component/Header';
 import {useArticleStore} from '../../Service/Store';
 import NewsCard from '../../Component/NewsCard';
 import LoadingModal from '../../Component/LoadingModal';
+import { useTrendingArticleStore } from '../../Service/Store/ArticleTrendingStore';
 
 const TrendingScreen = () => {
   const [isSearch, setIsSearch] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
-  const [page, setPage] = useState<number>(1);
-  const articleStore = useArticleStore();
+  const {trending, getTrending} = useTrendingArticleStore();
+  const {data, page} = trending;
 
   useEffect(() => {
-    articleStore.getTrending({page: 1})
+    getTrending({page: 1})
   }, []);
 
   return (
     <View style={styles.container}>
-      {articleStore.trending.fetching && <LoadingModal />}
       <Header
         title="Trending"
         onClickSearch={() => setIsSearch(true)}
@@ -34,14 +34,14 @@ const TrendingScreen = () => {
 
       <View style={styles.body}>
         <FlatList
-          data={articleStore.trending.data}
+          data={data}
           renderItem={({item, index}) => <NewsCard data={item} />}
           keyExtractor={(_, i) => i.toString()}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scroll}
           onEndReached={() => {
             // getData(page + 1, search);
-            articleStore.getTrending({page: articleStore.trending.page + 1})
+            getTrending({page: page + 1})
           }}
         />
       </View>

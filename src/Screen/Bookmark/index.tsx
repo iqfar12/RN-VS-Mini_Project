@@ -5,9 +5,11 @@ import styles from './styles'
 import Header from '../../Component/Header'
 import { useArticleStore } from '../../Service/Store'
 import NewsCard from '../../Component/NewsCard'
+import { useBookmarkArticleStore } from '../../Service/Store/ArticleBookmark'
 
 const BookmarkScreen = () => {
-    const articleStore = useArticleStore();
+    const {bookmark} = useBookmarkArticleStore();
+    const {data} = bookmark;
   return (
     <View style={styles.container}>
         <Header title='Bookmark' />
@@ -15,7 +17,7 @@ const BookmarkScreen = () => {
 
         <View style={styles.body}>
         <FlatList
-          data={articleStore.bookmark.data}
+          data={data}
           renderItem={({item, index}) => <NewsCard data={item} />}
           keyExtractor={(_, i) => i.toString()}
           showsVerticalScrollIndicator={false}

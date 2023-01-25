@@ -18,6 +18,7 @@ interface BigNewsCardProps {
   containerStyle?: StyleProp<ViewStyle>;
   data: Article;
   onMore?: () => void;
+  onPress?: () => void
 }
 
 const BigNewsCard = ({
@@ -25,11 +26,13 @@ const BigNewsCard = ({
   numberOfLines = 2,
   containerStyle,
   data,
-  onMore
+  onMore,
+  onPress
 }: BigNewsCardProps) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
+      onPress={onPress}
       style={[
         styles.container,
         {width: width ? width : '100%'},
